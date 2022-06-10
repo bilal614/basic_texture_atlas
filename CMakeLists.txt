@@ -12,13 +12,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include/
-    ${PROJECT_SOURCE_DIR}/lodepng-master/
+    ${PROJECT_SOURCE_DIR}/lodepng/
 )
 
 
 add_library( 
     basic_texture_atlas_lib
-    ${PROJECT_SOURCE_DIR}/lodepng-master/lodepng.cpp
+    ${PROJECT_SOURCE_DIR}/lodepng/lodepng.cpp
     ${PROJECT_SOURCE_DIR}/src/ImageEncoder.cpp
     ${PROJECT_SOURCE_DIR}/src/ImageDecoder.cpp
     ${PROJECT_SOURCE_DIR}/src/Image.cpp
