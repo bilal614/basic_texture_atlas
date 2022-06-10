@@ -11,17 +11,17 @@ int main(int argc, char *argv[]) {
     // auto file4 = "D:\\vm_shared\\basic_texture_atlas\\build\\test_images\\dove.png";
     // auto file5 = "D:\\vm_shared\\basic_texture_atlas\\build\\test_images\\bald_eagle.png";
 
-    auto file1 = "test_images/colors.png";
-    auto file2 = "test_images/autumn_tree.png";
-    auto file3 = "test_images/doodle.png";
-    auto file4 = "test_images/dove.png";
+    auto file1 = "test_images/dove.png";
+    auto file2 = "test_images/colors.png";
+    auto file3 = "test_images/autumn_tree.png";
+    auto file4 = "test_images/doodle.png";
     auto file5 = "test_images/bald_eagle.png";
 
     ImageDecoder decoder;
 
     std::vector<unsigned char> image1, image2, image3, image4, image5;
 
-    auto result = decoder.decode(file1, image1, 124, 124);
+    auto result = decoder.decode(file1, image1, 124, 126);
     std::cout << "result: " << result << std::endl;
     result = decoder.decode(file2, image2, 124, 124);
     std::cout << "result: " << result << std::endl;
