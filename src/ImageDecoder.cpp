@@ -93,12 +93,18 @@ std::vector<unsigned char> ImageDecoder::Impl::addPadding(const std::vector<unsi
     {
         for(unsigned int j = 0; j < width; j++)
         {
-            auto idx = i*width + j;
-            if(idx >= target.size() || idx >= src.size())
+            auto srcIdx = i*width + j;
+            if(srcIdx >= src.size())
             {
                 break;
             }
-            target[idx] = src[idx];
+
+            auto targetIdx = i*desiredWidth + j;
+            if(targetIdx >= target.size())
+            {
+                break;
+            }
+            target[targetIdx] = src[srcIdx];
         }
     }
     return pixelRgbaDataToRawImage(target);
@@ -111,10 +117,14 @@ ImageDecoder::ImageDecoder() :
 
 ImageDecoder::~ImageDecoder() = default;
 
-bool ImageDecoder::decode(const std::string& filePath, std::vector<unsigned char>& image, const unsigned int desiredWidth, const unsigned int desiredHeight)
+bool ImageDecoder::decode(const std::string& filePath, 
+    std::vector<unsigned char>& image,
+    unsigned int& width,
+    unsigned int& height, 
+    const unsigned int desiredWidth, 
+    const unsigned int desiredHeight)
 {
     std::vector<unsigned char> png;
-    unsigned width, height;
 
     auto error = lodepng::load_file(png, filePath);
     if(!error)

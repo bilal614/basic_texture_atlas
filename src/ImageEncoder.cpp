@@ -7,20 +7,15 @@
 namespace BasicTextureAtlas
 {
 
-struct ImageEncoder::Impl
-{
-
-};
-
-ImageEncoder::ImageEncoder() :
-    ptr{std::make_unique<ImageEncoder::Impl>()}
-{
-}
-
-ImageEncoder::~ImageEncoder() = default;
-
 bool ImageEncoder::encode(const std::string& filePath, const std::vector<unsigned char>& image, const unsigned width, const unsigned height)
 {
+    lodepng::State state;
+    state.info_raw.colortype = LCT_RGBA;
+    state.info_raw.bitdepth = 8;
+    // output color type
+    state.info_png.color.colortype = LCT_RGBA;
+    state.info_png.color.bitdepth = 8;
+    state.encoder.auto_convert = 0;
     std::vector<unsigned char> png;
 
     auto error = lodepng::encode(png, image, width, height);
