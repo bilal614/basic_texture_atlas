@@ -17,8 +17,9 @@ include_directories(
 add_library( 
     basic_texture_atlas_lib
     ${PROJECT_SOURCE_DIR}/lodepng/lodepng.cpp
-    ${PROJECT_SOURCE_DIR}/src/ImageEncoder.cpp
     ${PROJECT_SOURCE_DIR}/src/ImageDecoder.cpp
+    ${PROJECT_SOURCE_DIR}/src/ImageEncoder.cpp
+    ${PROJECT_SOURCE_DIR}/src/ImageReel.cpp
     ${PROJECT_SOURCE_DIR}/src/ImageSrcDir.cpp
 )
 
