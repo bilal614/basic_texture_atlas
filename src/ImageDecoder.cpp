@@ -4,7 +4,6 @@
 #include "lodepng.h"
 #include <cmath>
 #include <iostream>
-#include <string>
 
 constexpr unsigned long NrOfRgbaChannels = 4;
 
