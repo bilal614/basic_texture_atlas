@@ -4,8 +4,12 @@
 #include "lodepng.h"
 #include <cmath>
 #include <iostream>
+#include <string>
 
 constexpr unsigned long NrOfRgbaChannels = 4;
+
+namespace BasicTextureAtlas
+{
 
 struct ImageDecoder::Impl
 {
@@ -108,17 +112,23 @@ ImageDecoder::ImageDecoder() :
 
 ImageDecoder::~ImageDecoder() = default;
 
-bool ImageDecoder::decode(const char* filename, std::vector<unsigned char>& image, const unsigned int desiredWidth, const unsigned int desiredHeight)
+bool ImageDecoder::decode(const std::string& filePath, std::vector<unsigned char>& image, const unsigned int desiredWidth, const unsigned int desiredHeight)
 {
     std::vector<unsigned char> png;
     unsigned width, height;
 
-    auto error = lodepng::load_file(png, filename);
+    auto error = lodepng::load_file(png, filePath);
     if(!error)
     {
+        lodepng::State state;
         std::vector<unsigned char> temp;
-        error = lodepng::decode(temp, width, height, png);
+        error = lodepng::decode(temp, width, height, state, png);
         image = ptr->addPadding(temp, width, height, desiredWidth, desiredHeight);
+        
+        if(state.info_png.color.colortype != LCT_RGBA)
+        {
+            std::cout << "WARNING: Image does not have RGBA color type." << std::endl;
+        }
     }
     else
     {
@@ -133,3 +143,4 @@ bool ImageDecoder::decode(const char* filename, std::vector<unsigned char>& imag
     return true;
 }
 
+}

@@ -4,6 +4,9 @@
 #include <cmath>
 #include <iostream>
 
+namespace BasicTextureAtlas
+{
+
 struct ImageEncoder::Impl
 {
 
@@ -16,19 +19,14 @@ ImageEncoder::ImageEncoder() :
 
 ImageEncoder::~ImageEncoder() = default;
 
-bool ImageEncoder::encode(const char* filename, const std::vector<unsigned char>& image, const unsigned width, const unsigned height)
+bool ImageEncoder::encode(const std::string& filePath, const std::vector<unsigned char>& image, const unsigned width, const unsigned height)
 {
     std::vector<unsigned char> png;
-    lodepng::State state; //optionally customize this one
-    //state.encoder.text_compression = LodePNGColorType::LCT_RGBA; 
 
-    state.info_png.color.colortype = LCT_RGBA;
-    state.info_png.color.bitdepth = 8;
-    state.encoder.auto_convert = 0;
-    auto error = lodepng::encode(png, image, width, height, state);
+    auto error = lodepng::encode(png, image, width, height);
     if(!error)
     {
-        lodepng::save_file(png, filename);
+        lodepng::save_file(png, filePath);
     }
     else
     {
@@ -42,4 +40,6 @@ bool ImageEncoder::encode(const char* filename, const std::vector<unsigned char>
         return false;
     }
     return true;
+}
+
 }
