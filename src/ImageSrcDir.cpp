@@ -50,14 +50,16 @@ ImageSrcDir::ImageSrcDir() :
 
 ImageSrcDir::~ImageSrcDir() = default;
 
-std::vector<std::string> ImageSrcDir::pngFilePathsInDir()
+std::map<std::string, std::string> ImageSrcDir::pngFileNameAndPathsInDir()
 {
-    std::vector<std::string> pngFilePaths;
-    std::transform(ptr->pngFilesInDirectory.begin(), ptr->pngFilesInDirectory.end(), std::back_inserter(pngFilePaths), 
-    [](const std::filesystem::path& path) -> std::string 
-    {
-        return path.string();
-    });
+    std::map<std::string, std::string> pngFilePaths;
+    std::transform(ptr->pngFilesInDirectory.begin(), 
+        ptr->pngFilesInDirectory.end(), 
+        std::inserter(pngFilePaths, pngFilePaths.end()), 
+        [](const std::filesystem::path& path) -> auto
+        {
+            return std::make_pair(path.stem().string(), path.string());
+        });
 
     return pngFilePaths;
 }
