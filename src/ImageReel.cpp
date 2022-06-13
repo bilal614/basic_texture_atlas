@@ -86,25 +86,25 @@ ImageReel::~ImageReel() = default;
 bool ImageReel::decodePngFilesFromDir()
 {
     bool result = true;
-    for(const auto& path : ptr->imageSrcDir.pngFilePathsInDir())
+    for(const auto& path : ptr->imageSrcDir.pngFileNameAndPathsInDir())
     {
         std::vector<unsigned char> rawImageData;
         unsigned int width, height;
 
-        if(!ptr->imageDecoder.decode(path, rawImageData, width, height))
+        if(!ptr->imageDecoder.decode(path.second, rawImageData, width, height))
         {
-            std::cout << "ERROR: Could not decode the image: " << path << std::endl;
+            std::cout << "ERROR: Could not decode the image: " << path.first << std::endl;
             result = false;
         }
 
         if(width > 0 && height > 0)
         {
-            ptr->decodedRgbaImages.insert(std::make_pair(path, RgbaImage{path, width, height, std::move(rawImageData)}));
+            ptr->decodedRgbaImages.insert(std::make_pair(path.second, RgbaImage{path.first, width, height, std::move(rawImageData)}));
         }
         else
         {
             std::cout << "ERROR: Image height/width not correct, height: " << height 
-                << ", width: " << width << ", path: "<< path << std::endl;
+                << ", width: " << width << ", path: "<< path.second << std::endl;
         }
     }
     return result;
