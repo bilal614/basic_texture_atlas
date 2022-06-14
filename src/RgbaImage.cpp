@@ -91,17 +91,23 @@ RgbaImage::RgbaImage(RgbaImage&& rhs) noexcept = default;
 
 RgbaImage& RgbaImage::operator=(RgbaImage&& rhs) noexcept = default;
 
-unsigned RgbaImage::getImageSize()
+
+std::string RgbaImage::getImageName() const
+{
+    return ptr->imageName;
+}
+
+unsigned RgbaImage::getImageSize() const
 {
     return ptr->width*ptr->height;
 }
 
-unsigned RgbaImage::getWidth()
+unsigned RgbaImage::getWidth() const
 {
     return ptr->width;
 }
 
-unsigned RgbaImage::getHeight()
+unsigned RgbaImage::getHeight() const
 {
     return ptr->height;
 }

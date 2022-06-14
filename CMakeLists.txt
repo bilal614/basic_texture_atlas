@@ -21,6 +21,7 @@ add_library(
     ${PROJECT_SOURCE_DIR}/src/ImageEncoder.cpp
     ${PROJECT_SOURCE_DIR}/src/ImageReel.cpp
     ${PROJECT_SOURCE_DIR}/src/ImageSrcDir.cpp
+    ${PROJECT_SOURCE_DIR}/src/AtlasMetaDataWriter.cpp
     ${PROJECT_SOURCE_DIR}/src/RgbaImage.cpp
 )
 
