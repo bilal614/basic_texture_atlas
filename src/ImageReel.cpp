@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <iostream>
 #include <map>
-#include <string>
 
 #include "CombinedRgbaImageMetaData.h"
 #include "ImageDecoder.h"
