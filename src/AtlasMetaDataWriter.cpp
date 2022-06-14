@@ -82,12 +82,16 @@ AtlasMetaDataWriter::~AtlasMetaDataWriter() = default;
 
 bool AtlasMetaDataWriter::writeMetaDataFile()
 {
-    if(!ptr->writeMetaDataEntries())
+    auto result = ptr->writeMetaDataEntries();
+    if(result)
+    {
+        std::cout << "INFO: Metadata file written to location: " << ptr->atlasFilePath.string() << std::endl;
+    }
+    else
     {
         std::cout << "ERROR: Error occurred in writing metadata file." << std::endl;
-        return false;
     }
-    return true;
+    return result;
 }
 
 }
