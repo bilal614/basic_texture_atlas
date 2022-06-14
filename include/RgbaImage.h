@@ -9,7 +9,6 @@ namespace BasicTextureAtlas
 
 class RgbaImage
 {
-
 public:
     RgbaImage(std::string imgName, unsigned width, unsigned height, std::vector<unsigned char>&& imageData);
     ~RgbaImage();
@@ -18,9 +17,10 @@ public:
     RgbaImage(RgbaImage& rhs) = delete;
     RgbaImage& operator=(const RgbaImage& t) = delete;
 
-    unsigned getImageSize();
-    unsigned getWidth();
-    unsigned getHeight();
+    std::string getImageName() const;
+    unsigned getImageSize() const;
+    unsigned getWidth() const;
+    unsigned getHeight() const;
     std::vector<unsigned char> addPadding( unsigned desiredWidth, unsigned desiredHeight) const;
 
 private:

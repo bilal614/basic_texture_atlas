@@ -1,10 +1,12 @@
 #include "ImageReel.h"
 
 #include <algorithm>
+#include <filesystem>
 #include <iostream>
 #include <map>
 #include <string>
 
+#include "CombinedRgbaImageMetaData.h"
 #include "ImageDecoder.h"
 #include "ImageEncoder.h"
 #include "ImageSrcDir.h"
@@ -15,7 +17,7 @@ namespace BasicTextureAtlas
 
 struct ImageReel::Impl
 {
-    Impl(ImageSrcDir& imgSrcDir, ImageDecoder& imgDecoder, ImageEncoder& imgEncoder);
+    Impl(ImageSrcDir& imgSrcDir, ImageDecoder& imgDecoder, ImageEncoder& imgEncoder, const std::string& outputPath);
     void composeCombinedImage();
     ImageSrcDir& imageSrcDir;
     ImageDecoder& imageDecoder;
@@ -23,8 +25,10 @@ struct ImageReel::Impl
 
     void findLargestImageFromDecodedImages(unsigned& width, unsigned& height);
     void getImageReelSize(unsigned& width, unsigned& height);
+    std::vector<CombinedRgbaImageMetaData> createRgbaImageMetaDataForCombinedImage();
     std::map<std::string, RgbaImage> decodedRgbaImages;
     std::vector<unsigned char> combinedImage;
+    std::filesystem::path outputPath;
 };
 
 void ImageReel::Impl::findLargestImageFromDecodedImages(unsigned& width, unsigned& height)
@@ -68,15 +72,36 @@ void ImageReel::Impl::composeCombinedImage()
     }
 }
 
-ImageReel::Impl::Impl(ImageSrcDir& imgSrcDir, ImageDecoder& imgDecoder, ImageEncoder& imgEncoder) :
+std::vector<CombinedRgbaImageMetaData> ImageReel::Impl::createRgbaImageMetaDataForCombinedImage()
+{
+    std::vector<CombinedRgbaImageMetaData> combinedRgbaImageMetaData; 
+
+    unsigned largestImageWidth = 0, largestImageHeight = 0;
+    findLargestImageFromDecodedImages(largestImageWidth, largestImageHeight);
+    auto imageCount = 0;
+    for(const auto& img : decodedRgbaImages)
+    {
+        unsigned pX = 0; // x coordinate is always 0, since we put images in a column in combined Image reel texture atlas
+        auto pY = largestImageHeight * imageCount;
+        combinedRgbaImageMetaData.emplace_back(CombinedRgbaImageMetaData{img.second.getImageName(), 
+            pX, pY, 
+            img.second.getWidth(), 
+            img.second.getHeight()});
+        ++imageCount;
+    }
+    return combinedRgbaImageMetaData;
+}
+
+ImageReel::Impl::Impl(ImageSrcDir& imgSrcDir, ImageDecoder& imgDecoder, ImageEncoder& imgEncoder, const std::string& outPath) :
     imageSrcDir{imgSrcDir},
     imageDecoder{imgDecoder},
-    imageEncoder{imgEncoder}
+    imageEncoder{imgEncoder},
+    outputPath{outPath}
 {
 }
 
-ImageReel::ImageReel(ImageSrcDir& imgSrcDir, ImageDecoder& imgDecoder, ImageEncoder& imgEncoder) :
-    ptr{std::make_unique<Impl>(imgSrcDir, imgDecoder, imgEncoder)}
+ImageReel::ImageReel(ImageSrcDir& imgSrcDir, ImageDecoder& imgDecoder, ImageEncoder& imgEncoder, const std::string& outPath) :
+    ptr{std::make_unique<Impl>(imgSrcDir, imgDecoder, imgEncoder, outPath)}
 {
 
 }
@@ -113,12 +138,17 @@ bool ImageReel::decodePngFilesFromDir()
 bool ImageReel::encodeCombinedImage()
 {
     ptr->composeCombinedImage();
-    auto outputFilePath = "test_images/test_image.png";
+    auto outputFilePath = ptr->outputPath / std::filesystem::path{"test_image.png"};
     
     std::cout << "combinedImage size: " << ptr->combinedImage.size() << std::endl;
     unsigned width = 0, height = 0;
     ptr->getImageReelSize(width, height);
-    return ptr->imageEncoder.encode(outputFilePath, ptr->combinedImage, width, height);
+    return ptr->imageEncoder.encode(outputFilePath.string(), ptr->combinedImage, width, height);
+}
+
+std::vector<CombinedRgbaImageMetaData> ImageReel::getCombinedRgbaImageMetaData()
+{
+    return ptr->createRgbaImageMetaDataForCombinedImage();
 }
 
 }
