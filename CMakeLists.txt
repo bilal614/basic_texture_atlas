@@ -6,9 +6,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/test_images)
-file(COPY ${PROJECT_SOURCE_DIR}/test_images DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
 include_directories(
     ${PROJECT_SOURCE_DIR}/include/
     ${PROJECT_SOURCE_DIR}/lodepng/
@@ -38,3 +35,20 @@ target_link_libraries(
     basic_texture_atlas_host
     basic_texture_atlas_lib
 )
+
+if(WIN32)
+    add_custom_command(TARGET basic_texture_atlas_host  POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/test_images
+        ${CMAKE_CURRENT_BINARY_DIR}/Debug/test_images)
+
+    add_custom_command(TARGET basic_texture_atlas_host  POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/test_images
+        ${CMAKE_CURRENT_BINARY_DIR}/Release/test_images)
+else()
+    add_custom_command(TARGET basic_texture_atlas_host  POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/test_images
+        ${CMAKE_CURRENT_BINARY_DIR}/test_images)
+endif()
