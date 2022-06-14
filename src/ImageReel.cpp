@@ -138,8 +138,6 @@ bool ImageReel::encodeCombinedImage()
 {
     ptr->composeCombinedImage();
     auto outputFilePath = ptr->outputPath / std::filesystem::path{"test_image.png"};
-    
-    std::cout << "combinedImage size: " << ptr->combinedImage.size() << std::endl;
     unsigned width = 0, height = 0;
     ptr->getImageReelSize(width, height);
     return ptr->imageEncoder.encode(outputFilePath.string(), ptr->combinedImage, width, height);
