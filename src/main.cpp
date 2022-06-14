@@ -9,19 +9,18 @@
 int main(int argc, char *argv[]) 
 {
     std::string directoryPath = argc > 1 ? argv[1] : "test_images";
-    auto currentWorkingDirPath = std::filesystem::current_path().string();
+    auto hostAppWorkingDir =  std::filesystem::path{argv[0]}.parent_path().string();;
 
     BasicTextureAtlas::ImageSrcDir imgSrcDir{directoryPath};
     BasicTextureAtlas::ImageDecoder decoder;
     BasicTextureAtlas::ImageEncoder encoder;
-    BasicTextureAtlas::ImageReel imageReel{imgSrcDir, decoder, encoder, currentWorkingDirPath};
+    BasicTextureAtlas::ImageReel imageReel{imgSrcDir, decoder, encoder, hostAppWorkingDir};
 
     auto result = imageReel.decodePngFilesFromDir();
     result &= imageReel.encodeCombinedImage();
 
-    BasicTextureAtlas::AtlasMetaDataWriter atlasMetaDataWriter{currentWorkingDirPath, "test_images_metadata.txt", imageReel.getCombinedRgbaImageMetaData()};
+    BasicTextureAtlas::AtlasMetaDataWriter atlasMetaDataWriter{hostAppWorkingDir, "test_images_metadata.txt", imageReel.getCombinedRgbaImageMetaData()};
     atlasMetaDataWriter.writeMetaDataFile();
 
     return result;
-
 }

@@ -52,8 +52,8 @@ void ImageReel::Impl::getImageReelSize(unsigned& width, unsigned& height)
 {
     unsigned largestImageWidth = 0, largestImageHeight = 0;
     findLargestImageFromDecodedImages(largestImageWidth, largestImageHeight);
-    auto nrOfImages = decodedRgbaImages.size();
-    
+    unsigned nrOfImages = decodedRgbaImages.size();
+
     width = largestImageWidth;
     height = largestImageHeight*nrOfImages;
 }
@@ -140,7 +140,12 @@ bool ImageReel::encodeCombinedImage()
     auto outputFilePath = ptr->outputPath / std::filesystem::path{"test_image.png"};
     unsigned width = 0, height = 0;
     ptr->getImageReelSize(width, height);
-    return ptr->imageEncoder.encode(outputFilePath.string(), ptr->combinedImage, width, height);
+    auto result = ptr->imageEncoder.encode(outputFilePath.string(), ptr->combinedImage, width, height);
+    if(result)
+    {
+        std::cout << "INFO: Combined image written to location: " << outputFilePath << std::endl;
+    }
+    return result;
 }
 
 std::vector<CombinedRgbaImageMetaData> ImageReel::getCombinedRgbaImageMetaData()
